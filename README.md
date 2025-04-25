@@ -108,4 +108,37 @@ $ git add LICENSE
 $ git commit -m 'initial project version'
 ```
 #### Guardado de cambios
-https://git-scm.com/book/es/v2/Fundamentos-de-Git-Guardando-cambios-en-el-Repositorio
+Recuerda que cada archivo de tu repositorio puede tener dos estados: rastreados y sin rastrear. Los archivos rastreados (tracked files en inglés) son todos aquellos archivos que estaban en la última instantánea del proyecto; pueden ser archivos sin modificar, modificados o preparados. Los archivos sin rastrear son todos los demás - cualquier otro archivo en tu directorio de trabajo que no estaba en tu última instantánea y que no está en el área de preparación (staging area). Cuando clonas por primera vez un repositorio, todos tus archivos estarán rastreados y sin modificar pues acabas de sacarlos y aun no han sido editados.
+
+Mientras editas archivos, Git los ve como modificados, pues han sido cambiados desde su último commit. Luego preparas estos archivos modificados y finalmente confirmas todos los cambios preparados, y repites el ciclo.
+
+![alt text](image-5.png)
+
+```bash
+ ~  git status
+On branch prueba
+Your branch is up to date with 'origin/prueba'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        image-5.png
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+```bash
+$ git status
+On branch master
+nothing to commit, working directory clean
+```
+Esto significa que tienes un directorio de trabajo limpio - en otras palabras, que no hay archivos rastreados y modificados. Además, Git no encuentra archivos sin rastrear, de lo contrario aparecerían listados aquí. Finalmente, el comando te indica en cuál rama estás y te informa que no ha variado con respecto a la misma rama en el servidor. Por ahora, la rama siempre será “master”, que es la rama por defecto; no le prestaremos atención de momento.
+
+Supongamos que añades un nuevo archivo a tu proyecto, un simple texto. Si el archivo no existía antes y ejecutas git status, verás el archivo sin rastrear de la siguiente manera:
+
+```bash
+
+```
