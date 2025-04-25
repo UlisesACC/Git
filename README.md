@@ -338,3 +338,95 @@ index c70510c..1a54286 100644
 + ~  git status -s
 :
 ```
+Este comando compara lo que tienes en tu directorio de trabajo con lo que está en el área de preparación. El resultado te indica los cambios que has hecho pero que aun no has preparado.
+
+Si quieres ver lo que has preparado y será incluido en la próxima confirmación, puedes usar git diff --staged. Este comando compara tus cambios preparados con la última instantánea confirmada.
+```bash
+ ~  git diff --staged
+diff --git a/README.md b/README.md
+index 25eb4a6..8cd6793 100644
+--- a/README.md
++++ b/README.md
+@@ -337,4 +337,7 @@ index c70510c..1a54286 100644
+ +```bash
+ + ~  git status -s
+ :
+-```
+\ No newline at end of file
++```
++Este comando compara lo que tienes en tu directorio de trabajo con lo que está en el área de preparación. El resultado te indica los cambios que has hecho pero que aun no has preparado.
++
++Si quieres ver lo que has preparado y será incluido en la próxima confirmación, puedes usar git diff --staged. Este comando compara tus cambios preparados con la última instantánea confirmada.
+\ No newline at end of file
+```
+Es importante resaltar que al llamar a git diff sin parámetros no verás los cambios desde tu última confirmación - solo verás los cambios que aun no están preparados. Esto puede ser confuso porque si preparas todos tus cambios, git diff no te devolverá ninguna salida.
+
+Pasemos a otro ejemplo, si preparas el archivo CONTRIBUTING.md y luego lo editas, puedes usar git diff para ver los cambios en el archivo que ya están preparados y los cambios que no lo están. Si nuestro ambiente es como este:
+
+```bash
+$ git add CONTRIBUTING.md
+$ echo 'test line' >> CONTRIBUTING.md
+$ git status
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+    modified:   CONTRIBUTING.md
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+    modified:   CONTRIBUTING.md
+```
+Puedes usar git diff para ver qué está sin preparar
+```bash
+~  git diff
+diff --git a/README.md b/README.md
+index 8cd6793..7f1c8b3 100644
+--- a/README.md
++++ b/README.md
+@@ -340,4 +340,43 @@ index c70510c..1a54286 100644
+ ```
+ Este comando compara lo que tienes en tu directorio de trabajo con lo que está en el área de preparación. El resultado te indica los cambios que has hecho pero que aun no has preparado.
+ 
+-Si quieres ver lo que has preparado y será incluido en la próxima confirmación, puedes usar git diff --staged. Este comando compara tus cambios preparados con la última instantánea confirmada.
+\ No newline at end of file
++Si quieres ver lo que has preparado y será incluido en la próxima confirmación, puedes usar git diff --staged. Este comando compara tus cambios preparados con la última instantánea confirmada.
++```bash
++ ~  git diff --staged
++diff --git a/README.md b/README.md
++index 25eb4a6..8cd6793 100644
++--- a/README.md
+++++ b/README.md
++@@ -337,4 +337,7 @@ index c70510c..1a54286 100644
++ +```bash
++ + ~  git status -s
++ :
++-```
++\ No newline at end of file
+++```
+++Este comando compara lo que tienes en tu directorio de trabajo con lo que está en el área de preparación. El resultado te indica los cambios que has hecho pero que aun no has preparado.
+:
+```
+y git diff --cached para ver que has preparado hasta ahora (--staged y --cached son sinónimos):
+```bash
+ ~  git diff --cached
+diff --git a/README.md b/README.md
+index 25eb4a6..8cd6793 100644
+--- a/README.md
++++ b/README.md
+@@ -337,4 +337,7 @@ index c70510c..1a54286 100644
+ +```bash
+ + ~  git status -s
+ :
+-```
+\ No newline at end of file
++```
++Este comando compara lo que tienes en tu directorio de trabajo con lo que está en el área de preparación. El resultado te indica los cambios que has hecho pero que aun no has preparado.
++
++Si quieres ver lo que has preparado y será incluido en la próxima confirmación, puedes usar git diff --staged. Este comando compara tus cambios preparados con la última instantánea confirmada.
+\ No newline at end of file
+```
+Git Diff como Herramienta Externa
+A lo largo del libro, continuaremos usando el comando git diff de distintas maneras. Existe otra forma de ver estas diferencias si prefieres utilizar una interfaz gráfica u otro programa externo. Si ejecutas git difftool en vez de git diff, podrás ver los cambios con programas de este tipo como Araxis, emerge, vimdiff y más. Ejecuta git difftool --tool-help para ver qué tienes disponible en tu sistema.
