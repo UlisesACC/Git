@@ -140,5 +140,201 @@ Esto significa que tienes un directorio de trabajo limpio - en otras palabras, q
 Supongamos que añades un nuevo archivo a tu proyecto, un simple texto. Si el archivo no existía antes y ejecutas git status, verás el archivo sin rastrear de la siguiente manera:
 
 ```bash
+git status
+On branch prueba
+Your branch is ahead of 'origin/prueba' by 1 commit.
+  (use "git push" to publish your local commits)
 
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        texto.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
+##### Rastrear Archivos Nuevos
+Puedes ver que el archivo texto está sin rastrear porque aparece debajo del encabezado “Untracked files” (“Archivos no rastreados” en inglés) en la salida. Sin rastrear significa que Git ve archivos que no tenías en el commit anterior. Git no los incluirá en tu próximo commit a menos que se lo indiques explícitamente. Se comporta así para evitar incluir accidentalmente archivos binarios o cualquier otro archivo que no quieras incluir. Como tú sí quieres incluir texto, debes comenzar a rastrearlo.
+```bash
+~  git add texto.txt 
+~  git status
+On branch prueba
+Your branch is ahead of 'origin/prueba' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   texto.txt
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+```
+Puedes ver que está siendo rastreado porque aparece luego del encabezado “Cambios a ser confirmados” (“Changes to be committed” en inglés). Si confirmas en este punto, se guardará en el historial la versión del archivo correspondiente al instante en que ejecutaste git add. Anteriormente cuando ejecutaste git init, ejecutaste luego git add (files) - lo cual inició el rastreo de archivos en tu directorio. El comando git add puede recibir tanto una ruta de archivo como de un directorio; si es de un directorio, el comando añade recursivamente los archivos que están dentro de él.
+
+##### Preparar Archivos Modificados
+Vamos a cambiar un archivo que esté rastreado. Si cambias el archivo rastreado llamado “CONTRIBUTING.md” y luego ejecutas el comando git status, verás algo parecido a esto:
+```bash
+~  git status
+On branch prueba
+Your branch is ahead of 'origin/prueba' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   texto.txt
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+```
+El archivo “CONTRIBUTING.md” aparece en una sección llamada “Changes not staged for commit” (“Cambios no preparado para confirmar” en inglés) - lo que significa que existe un archivo rastreado que ha sido modificado en el directorio de trabajo pero que aún no está preparado. Para prepararlo, ejecutas el comando git add. git add es un comando que cumple varios propósitos - lo usas para empezar a rastrear archivos nuevos, preparar archivos, y hacer otras cosas como marcar archivos en conflicto por combinación como resueltos. Es más útil que lo veas como un comando para “añadir este contenido a la próxima confirmación” más que para “añadir este archivo al proyecto”. Ejecutemos git add para preparar el archivo “CONTRIBUTING.md” y luego ejecutemos git status:
+
+```bash
+~  git status
+On branch prueba
+Your branch is ahead of 'origin/prueba' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   README.md
+        new file:   texto.txt
+```
+Ambos archivos están preparados y formarán parte de tu próxima confirmación. En este momento, supongamos que recuerdas que debes hacer un pequeño cambio en CONTRIBUTING.md antes de confirmarlo. Abres de nuevo el archivo, lo cambias y ahora estás listos para confirmar. Sin embargo, ejecutemos git status una vez más:
+```bash
+ ~  git status
+On branch prueba
+Your branch is ahead of 'origin/prueba' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   README.md
+        new file:   texto.txt
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+```
+¡¿Pero qué…​?! Ahora CONTRIBUTING.md aparece como preparado y como no preparado. ¿Cómo es posible? Resulta que Git prepara un archivo de acuerdo al estado que tenía cuando ejecutas el comando git add. Si confirmas ahora, se confirmará la versión de CONTRIBUTING.md que tenías la última vez que ejecutaste git add y no la versión que ves ahora en tu directorio de trabajo al ejecutar git status. Si modificas un archivo luego de ejecutar git add, deberás ejecutar git add de nuevo para preparar la última versión del archivo:
+```bash
+~  git status
+On branch prueba
+Your branch is ahead of 'origin/prueba' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   README.md
+        new file:   texto.txt
+```
+##### Estado Abreviado
+Si bien es cierto que la salida de git status es bastante explícita, también es verdad que es muy extensa. Git ofrece una opción para obtener un estado abreviado, de manera que puedas ver tus cambios de una forma más compacta. Si ejecutas git status -s o git status --short, obtendrás una salida mucho más simplificada.
+```bash
+ ~  git status -s
+MM README.md
+A  texto.txt
+
+
+$ git status -s
+ M README
+MM Rakefile
+A  lib/git.rb
+M  lib/simplegit.rb
+?? LICENSE.txt
+```
+Los archivos nuevos que no están rastreados tienen un ?? a su lado, los archivos que están preparados tienen una A y los modificados una M. El estado aparece en dos columnas - la columna de la izquierda indica el estado preparado y la columna de la derecha indica el estado sin preparar. Por ejemplo, en esa salida, el archivo README está modificado en el directorio de trabajo pero no está preparado, mientras que lib/simplegit.rb está modificado y preparado. El archivo Rakefile fue modificado, preparado y modificado otra vez por lo que existen cambios preparados y sin preparar.
+
+##### Ignorar Archivos
+A veces, tendrás algún tipo de archivo que no quieres que Git añada automáticamente o más aun, que ni siquiera quieras que aparezca como no rastreado. Este suele ser el caso de archivos generados automáticamente como trazas o archivos creados por tu sistema de compilación. En estos casos, puedes crear un archivo llamado .gitignore que liste patrones a considerar. Este es un ejemplo de un archivo .gitignore:
+```bash
+cat .gitignore
+*.[oa]
+*~
+```
+La primera línea le indica a Git que ignore cualquier archivo que termine en “.o” o “.a” - archivos de objeto o librerías que pueden ser producto de compilar tu código. La segunda línea le indica a Git que ignore todos los archivos que terminen con una tilde (~), la cual es usada por varios editores de texto como Emacs para marcar archivos temporales. También puedes incluir cosas como trazas, temporales, o pid directamente; documentación generada automáticamente; etc. Crear un archivo .gitignore antes de comenzar a trabajar es generalmente una buena idea, pues así evitas confirmar accidentalmente archivos que en realidad no quieres incluir en tu repositorio Git.
+
+Las reglas sobre los patrones que puedes incluir en el archivo .gitignore son las siguientes:
+
+Ignorar las líneas en blanco y aquellas que comiencen con #.
+
+Emplear patrones glob estándar que se aplicarán recursivamente a todo el directorio del repositorio local.
+
+Los patrones pueden comenzar en barra (/) para evitar recursividad.
+
+Los patrones pueden terminar en barra (/) para especificar un directorio.
+
+Los patrones pueden negarse si se añade al principio el signo de exclamación (!).
+
+Los patrones glob son una especie de expresión regular simplificada usada por los terminales. Un asterisco (*) corresponde a cero o más caracteres; [abc] corresponde a cualquier caracter dentro de los corchetes (en este caso a, b o c); el signo de interrogación (?) corresponde a un caracter cualquiera; y los corchetes sobre caracteres separados por un guión ([0-9]) corresponde a cualquier caracter entre ellos (en este caso del 0 al 9). También puedes usar dos asteriscos para indicar directorios anidados; a/**/z coincide con a/z, a/b/z, a/b/c/z, etc.
+
+Aquí puedes ver otro ejemplo de un archivo .gitignore:
+```txt
+# ignora los archivos terminados en .a
+*.a
+
+# pero no lib.a, aun cuando había ignorado los archivos terminados en .a en la línea anterior
+!lib.a
+
+# ignora unicamente el archivo TODO de la raiz, no subdir/TODO
+/TODO
+
+# ignora todos los archivos del directorio build/
+build/
+
+# ignora doc/notes.txt, pero no este: doc/server/arch.txt
+doc/*.txt
+
+# ignora todos los archivos .txt del directorio doc/
+doc/**/*.txt
+```
+##### Ver los Cambios Preparados y No Preparados
+Si el comando git status es muy impreciso para ti - quieres ver exactamente que ha cambiado, no solo cuáles archivos lo han hecho - puedes usar el comando git diff. Hablaremos sobre git diff más adelante, pero lo usarás probablemente para responder estas dos preguntas: ¿Qué has cambiado pero aun no has preparado? y ¿Qué has preparado y está listo para confirmar? A pesar de que git status responde a estas preguntas de forma muy general listando el nombre de los archivos, git diff te muestra las líneas exactas que fueron añadidas y eliminadas, es decir, el parche.
+
+Supongamos que editas y preparas el archivo README de nuevo y luego editas CONTRIBUTING.md pero no lo preparas. Si ejecutas el comando git status, verás algo como esto:
+```bash
+ ~  git status
+On branch prueba
+Your branch is ahead of 'origin/prueba' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   README.md
+        new file:   texto.txt
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+```
+Para ver qué has cambiado pero aun no has preparado, escribe git diff sin más parámetros:
+```bash
+ ~  git diff
+diff --git a/README.md b/README.md
+index c70510c..1a54286 100644
+--- a/README.md
++++ b/README.md
+@@ -219,3 +219,95 @@ Changes not staged for commit:
+         modified:   README.md
+ ```
+ ¡¿Pero qué…​?! Ahora CONTRIBUTING.md aparece como preparado y como no preparado. ¿Cómo es posible? Resulta que Git prepara un archivo de acuerdo al estado que tenía cuando ejecutas el comando git add. Si confirmas ahora, se confirmará la versión de CONTRIBUTING.md que tenías la última vez que ejecutaste git add y no la versión que ves ahora en tu directorio de trabajo al ejecutar git status. Si modificas un archivo luego de ejecutar git add, deberás ejecutar git add de nuevo para preparar la última versión del archivo:
++```bash
++~  git status
++On branch prueba
++Your branch is ahead of 'origin/prueba' by 1 commit.
++  (use "git push" to publish your local commits)
++
++Changes to be committed:
++  (use "git restore --staged <file>..." to unstage)
++        modified:   README.md
++        new file:   texto.txt
++```
++##### Estado Abreviado
++Si bien es cierto que la salida de git status es bastante explícita, también es verdad que es muy extensa. Git ofrece una opción para obtener un estado abreviado, de manera que puedas ver tus cambios de una forma más compacta. Si ejecutas git status -s o git status --short, obtendrás una salida mucho más simplificada.
++```bash
++ ~  git status -s
+:
 ```
