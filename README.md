@@ -430,3 +430,24 @@ index 25eb4a6..8cd6793 100644
 ```
 Git Diff como Herramienta Externa
 A lo largo del libro, continuaremos usando el comando git diff de distintas maneras. Existe otra forma de ver estas diferencias si prefieres utilizar una interfaz gráfica u otro programa externo. Si ejecutas git difftool en vez de git diff, podrás ver los cambios con programas de este tipo como Araxis, emerge, vimdiff y más. Ejecuta git difftool --tool-help para ver qué tienes disponible en tu sistema.
+
+##### Confirmar tus Cambios
+Ahora que tu área de preparación está como quieres, puedes confirmar tus cambios. Recuerda que cualquier cosa que no esté preparada - cualquier archivo que hayas creado o modificado y que no hayas agregado con git add desde su edición - no será confirmado. Se mantendrán como archivos modificados en tu disco. En este caso, digamos que la última vez que ejecutaste git status verificaste que todo estaba preparado y que estás listo para confirmar tus cambios. La forma más sencilla de confirmar es escribiendo git commit:
+```bash
+git commit
+```
+Al hacerlo, arrancará el editor de tu preferencia. (El editor se establece a través de la variable de ambiente $EDITOR de tu terminal - usualmente es vim o emacs, aunque puedes configurarlo con el editor que quieras usando el comando git config --global core.editor)
+El editor mostrará el siguiente texto (este ejemplo corresponde a una pantalla de Vim):
+```vim
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#	new file:   README
+#	modified:   CONTRIBUTING.md
+#
+~
+~
+~
+".git/COMMIT_EDITMSG" 9L, 283C
+```
